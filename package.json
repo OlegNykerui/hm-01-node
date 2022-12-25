@@ -4,7 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index",
+    "dev": "nodemon index"
+
   },
   "repository": {
     "type": "git",
@@ -15,5 +18,8 @@
   "bugs": {
     "url": "https://github.com/OlegNykerui/hm-01-node/issues"
   },
-  "homepage": "https://github.com/OlegNykerui/hm-01-node#readme"
+  "homepage": "https://github.com/OlegNykerui/hm-01-node#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  }
 }
