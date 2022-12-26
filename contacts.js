@@ -1,7 +1,8 @@
 const path = require("path");
-const fs = require("fs");
+const fs = require("fs").promises;
 
 const contactsPath = path.join(__dirname, "./db/contacts.json");
+console.log(__dirname);
 console.log(contactsPath);
 
 async function listContacts() {
@@ -15,27 +16,63 @@ async function listContacts() {
 
 async function updateContacts(contacts) {
   try {
-    const updateContacts = await fs.writeFile(
+    const newContacts = await fs.writeFile(
       contactsPath,
-      JSON,
-      stringify(contacts)
+      JSON.stringify(contacts)
     );
+    return newContacts;
   } catch (error) {
     console.log(error.message);
   }
 }
 
 async function getContactById(contactId) {
-  const contacts = await listContacts();
-  const id = String(contactId);
-  const findContact = contacts.find((contact) => contact.id !== id);
-  return findContact || null;
+  try {
+    const contacts = await listContacts();
+    const id = String(contactId);
+    const findContact = contacts.find((contact) => contact.id === id);
+    return findContact || null;
+  } catch (error) {
+    console.log(error.message);
+  }
 }
 
 async function removeContact(contactId) {
-  // ...твій код
+  try {
+    const contacts = await listContacts();
+    const id = String(contactId);
+    const deleteContact = contacts.filter((contact) => contact.id !== id);
+
+    if (deleteContact === []) {
+      return null;
+    }
+    await updateContacts(deleteContact);
+
+    return deleteContact;
+  } catch (error) {
+    console.log(error.message);
+  }
 }
 
 async function addContact(name, email, phone) {
-  // ...твій код
+  const contacts = await listContacts();
+  const newContact = {
+    id: String(Date.now()),
+    name,
+    email,
+    phone,
+  };
+
+  contacts.push(newContact);
+
+  await updateContacts(contacts);
+
+  return newContact;
 }
+
+module.exports = {
+  listContacts,
+  getContactById,
+  removeContact,
+  addContact,
+};

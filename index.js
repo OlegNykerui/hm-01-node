@@ -1,11 +1,48 @@
-const { getCurrentDate } = require("./dateUtils");
+const {
+  listContacts,
+  getContactById,
+  addContact,
+  removeContact,
+} = require("./contacts");
 
-testData = "123";
+const { Command } = require("commander");
+const program = new Command();
+program
+  .option("-a, --action <type>", "choose action")
+  .option("-i, --id <type>", "user id")
+  .option("-n, --name <type>", "user name")
+  .option("-e, --email <type>", "user email")
+  .option("-p, --phone <type>", "user phone");
 
-console.log(`Get current data ${getCurrentDate()}`);
-console.log(testData);
+program.parse(process.argv);
 
-// console.log(process.argv);
+const argv = program.opts();
 
-// console.log(__dirname);
-// console.log(__filename);
+async function invokeAction({ action, id, name, email, phone }) {
+  switch (action) {
+    case "list":
+      const allContacts = await listContacts();
+      console.table(allContacts);
+      break;
+
+    case "get":
+      const getContact = await getContactById(id);
+      console.log(getContact);
+      break;
+
+    case "add":
+      const newContact = await addContact(name, email, phone);
+      console.log(newContact);
+      break;
+
+    case "remove":
+      const deletedContact = await removeContact(id);
+      console.log(deletedContact);
+      break;
+
+    default:
+      console.warn("\x1B[31m Unknown action type!");
+  }
+}
+
+invokeAction(argv);
