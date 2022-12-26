@@ -1,5 +1,6 @@
 const path = require("path");
 const fs = require("fs").promises;
+const { v4: uuidv4 } = require("uuid");
 
 const contactsPath = path.join(__dirname, "./db/contacts.json");
 console.log(__dirname);
@@ -29,8 +30,9 @@ async function updateContacts(contacts) {
 async function getContactById(contactId) {
   try {
     const contacts = await listContacts();
-    const id = String(contactId);
-    const findContact = contacts.find((contact) => contact.id === id);
+    const findContact = contacts.find(
+      (contact) => contact.id === contactId.toString()
+    );
     return findContact || null;
   } catch (error) {
     console.log(error.message);
@@ -40,8 +42,9 @@ async function getContactById(contactId) {
 async function removeContact(contactId) {
   try {
     const contacts = await listContacts();
-    const id = String(contactId);
-    const deleteContact = contacts.filter((contact) => contact.id !== id);
+    const deleteContact = contacts.filter(
+      (contact) => contact.id !== contactId.toString()
+    );
 
     if (deleteContact === []) {
       return null;
@@ -57,7 +60,7 @@ async function removeContact(contactId) {
 async function addContact(name, email, phone) {
   const contacts = await listContacts();
   const newContact = {
-    id: String(Date.now()),
+    id: uuidv4(),
     name,
     email,
     phone,
